@@ -86,6 +86,7 @@ if __name__ == '__main__':
   argparser = argparse.ArgumentParser()
   argparser.add_argument('path', type=str, help='input video file or container directory')
   argparser.add_argument('-v', '--verbose', action='store_true', help='show verbose message')
+  argparser.add_argument('-r', '--recursive', action='store_true', help='process files recursively in directory')
   argparser.add_argument('-c:v', '--video-codec', type=str, dest='video_codec', help=f'set video codec (default: {config.video_codec})')
   argparser.add_argument('-crf', '--video-crf', type=int, dest='video_crf', help=f'set video crf value (default: {config.video_crf})')
   argparser.add_argument('-c:a', '--audio-codec', type=str, dest='audio_codec', help=f'set audio codec (default: {config.audio_codec})')
@@ -111,8 +112,12 @@ if __name__ == '__main__':
         print(color.red + '[Error] Output format is the same as input format.')
         exit()
       else:
-        for in_file in glob.iglob(f'{args.path}/**/*.{args.input_format}'):
-          encode(in_file)
+        if args.recursive: 
+          for in_file in glob.iglob(f'{args.path}/**/*.{args.input_format}', recursive=True):
+            encode(in_file, args.verbose)
+        else:
+          for in_file in glob.iglob(f'{args.path}/*.{args.input_format}'):
+            encode(in_file, args.verbose)
     else:
       print(color.red + '[Error] To encode videos recursively, you need to specify input format with --input-format (-if) option.')
       exit()
