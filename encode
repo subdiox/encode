@@ -36,7 +36,7 @@ def encode(in_file, verbose):
   streams = json.loads(proc.stdout.decode('utf8')).get('streams')
   if streams == None:
     print(color.red + '[Error] Source file is not a valid video file.')
-    exit()
+    return
 
   video = None
   videos = [x for x in streams if x['codec_type'] == 'video']
@@ -58,7 +58,7 @@ def encode(in_file, verbose):
       audio = jpn_audios[0]
   
   if video == None or audio == None:
-    exit()
+    return
   
   if verbose:
     print(f'video: {json.dumps(video, indent=4)}')
